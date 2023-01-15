@@ -1,0 +1,58 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Example {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model User {
+    id        Int      @id @default(autoincrement())
+    name      String
+    email     String   @unique
+    password  String
+    money     Int      @default(0)
+    role      Role     @default(USER)
+    status    String   @default("Active")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Product {
+    id         Int      @id @default(autoincrement())
+    category   Category @relation(fields: [categoryId], references: [id])
+    categoryId Int
+    name       String
+    price      String   @unique
+    cpu        String
+    ram        Int
+    os         Int
+    bandwidth  String
+    status     String   @default("Active")
+    slug       String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+model Category {
+    id        Int       @id @default(autoincrement())
+    name      String
+    slug      String    @unique
+    products  Product[]
+    status    String    @default("Active")
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+}
+
+enum Role {
+    USER
+    CTV
+    ADMIN
+}
