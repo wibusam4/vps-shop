@@ -1,10 +1,14 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
-import "../styles/globals.css";
-import { ToastContainer } from "react-toastify";
 import * as React from "react";
+import { SessionProvider } from "next-auth/react";
+import NextNProgress from "nextjs-progressbar";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "../styles/globals.css";
+import "swiper/css";
+import "swiper/css/navigation";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -13,6 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ToastContainer />
+      <NextNProgress />
       <Component {...pageProps} />
     </SessionProvider>
   );

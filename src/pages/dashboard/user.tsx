@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { requireAuth } from "../../common/authAdmin";
 import Main from "../../components/dashboard/layouts/Main";
-import Input from "../../components/Input";
+import Input from "../../components/dashboard/Input";
 import axios from "axios";
 import Swal from "sweetalert2";
 

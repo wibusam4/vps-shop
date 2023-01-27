@@ -30,10 +30,10 @@ model Product {
     category   Category @relation(fields: [categoryId], references: [id])
     categoryId Int
     name       String
-    price      String   @unique
-    cpu        String
+    price      Int
+    cpu        Int
     ram        Int
-    os         Int
+    os         String
     bandwidth  String
     status     String   @default("Active")
     slug       String

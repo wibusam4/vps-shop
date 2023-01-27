@@ -1,0 +1,56 @@
+import { prisma } from "../../server/db";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { unstable_getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  var slugify = require("slugify");
+  switch (req.method) {
+    case "POST":
+      var slugify = require("slugify");
+      const { name, categoryId, price, ram, cpu, os, bandwidth, status } =
+        req.body;
+      const product = await prisma.product.create({
+        data: {
+          name,
+          categoryId,
+          price,
+          ram,
+          cpu,
+          os,
+          bandwidth,
+          status,
+          slug: slugify(name),
+        },
+      });
+      res.status(201).json(product);
+      break;
+    case "PUT":
+      const categoryUpdate = await prisma.product.update({
+        where: {
+          id: req.body.id,
+        },
+        data: {
+          name: req.body.name,
+          status: req.body.status,
+          slug: slugify(req.body.name),
+        },
+      });
+      res.status(201).json(categoryUpdate);
+      break;
+    case "DELETE":
+      const categoryDelete = await prisma.product.delete({
+        where: {
+          id: req.body.id,
+        },
+      });
+      res.status(201).json(categoryDelete);
+      break;
+    default:
+      res.setHeader("Allow", ["POST", "PUT", "DELETE"]);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}

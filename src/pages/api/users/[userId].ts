@@ -3,7 +3,6 @@ import { prisma } from "../../../server/db";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { exclude } from "../../../until/excludeKey";
-import { never, NEVER } from "zod";
 
 export default async function handler(
   req: NextApiRequest,
