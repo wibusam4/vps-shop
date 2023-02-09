@@ -32,7 +32,7 @@ export default async function handler(
 
   /* DELETE METHOD */
   if (req.method === "DELETE") {
-    await prisma.user.delete({ where: { id: Number(id) } });
+    await prisma.user.delete({ where: { id: id } });
     res
       .status(200)
       .json({ success: "true", message: `Delete ${id} successfully` });

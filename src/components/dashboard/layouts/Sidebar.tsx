@@ -1,4 +1,5 @@
 import { faHome, faUser, faShop, faBagShopping } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 import React from "react";
 import ItemMenu from "../ItemMenu";
 
@@ -14,7 +15,7 @@ const Sidebar: React.FC = () => {
       <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
       <aside className="w-[260px] bg-base-200">
         <div className="sticky top-0 z-20 items-center gap-2 bg-base-200 bg-opacity-90 px-4 py-2 backdrop-blur">
-          <a
+          <Link
             href="/"
             aria-current="page"
             aria-label="Homepage"
@@ -24,7 +25,7 @@ const Sidebar: React.FC = () => {
               <span className="lowercase">Admin</span>
               <span className="uppercase text-base-content">UI</span>
             </div>
-          </a>
+          </Link>
         </div>
         <div className="h-4"></div>
         

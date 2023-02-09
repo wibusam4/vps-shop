@@ -10,13 +10,12 @@ export default async function handler(
   var slugify = require("slugify");
   switch (req.method) {
     case "POST":
-      var slugify = require("slugify");
       const { name, status } = req.body;
       const category = await prisma.category.create({
         data: {
           name,
           status,
-          slug: slugify(name),
+          slug: `c/${slugify(`${name.toLowerCase()}`)}`,
         },
       });
       res.status(201).json(category);
@@ -29,7 +28,7 @@ export default async function handler(
         data: {
           name: req.body.name,
           status: req.body.status,
-          slug: slugify(req.body.name),
+          slug: `c/${slugify(`${req.body.name.toLowerCase()}`)}`,
         },
       });
       res.status(201).json(categoryUpdate);

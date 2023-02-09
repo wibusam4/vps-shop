@@ -17,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ToastContainer />
-      <NextNProgress />
+      <NextNProgress color="#1fe330" />
       <Component {...pageProps} />
     </SessionProvider>
   );

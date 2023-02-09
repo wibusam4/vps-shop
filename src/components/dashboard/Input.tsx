@@ -1,18 +1,21 @@
-interface InputProps {
-  value: string;
-  placeholder?: string
-}
+import { Field } from "formik";
+import { ChangeEvent, ChangeEventHandler } from "react";
 
-const Input: React.FC<InputProps> = ({ value,  placeholder}) => {
+interface InputProps {
+  field: any;
+  form: any;
+}
+const Input: React.FC<InputProps> = ({
+  field, // { name, value, onChange, onBlur }
+  form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
+  ...props
+}) => {
   return (
-    <div className="form-control mb-4 flex flex-row gap-x-4 items-center">
-      <label htmlFor="" className="font-bold min-w-[20%]">{placeholder}: </label>
-      <input
-        type="text"
-        value={value}
-        placeholder={placeholder}
-        className="input-bordered input-secondary input w-full max-w-xs"
-      />
+    <div>
+      <input type="text" {...field} {...props} />
+      {touched[field.name] && errors[field.name] && (
+        <div className="error">{errors[field.name]}</div>
+      )}
     </div>
   );
 };

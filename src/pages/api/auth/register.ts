@@ -12,7 +12,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
         data: {
           name: name ? name : null,
           email: email ? email : null,
-          password: hash ? password : null,
+          password: hash ? hash : null,
         },
       });
 

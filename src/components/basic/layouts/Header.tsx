@@ -97,7 +97,7 @@ const Header: React.FC<HeaderProps> = ({}) => {
                       {item.submenu.map((sub: Submenu) => {
                         return (
                           <li key={sub.name}>
-                            <Link href={sub.slug}>{sub.name}</Link>
+                            <Link href={`/${sub.slug}`}>{sub.name}</Link>
                           </li>
                         );
                       })}

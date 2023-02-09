@@ -3,52 +3,51 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "mongodb"
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
 model User {
-    id        Int      @id @default(autoincrement())
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
     name      String
     email     String   @unique
     password  String
     money     Int      @default(0)
     role      Role     @default(USER)
-    status    String   @default("Active")
+    status    Status   @default(ACTIVE)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model Product {
-    id         Int      @id @default(autoincrement())
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
     category   Category @relation(fields: [categoryId], references: [id])
-    categoryId Int
+    categoryId String   @db.ObjectId
     name       String
     price      Int
     cpu        Int
     ram        Int
     os         String
     bandwidth  String
-    status     String   @default("Active")
-    slug       String
+    status     Status   @default(ACTIVE)
+    slug       String   @unique
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
 }
 
 model Category {
-    id        Int       @id @default(autoincrement())
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
     name      String
     slug      String    @unique
     products  Product[]
-    status    String    @default("Active")
+    status    Status    @default(ACTIVE)
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
+}
+
+enum Status {
+    ACTIVE
+    INACTIVE
 }
 
 enum Role {

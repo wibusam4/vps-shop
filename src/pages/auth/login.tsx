@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import { swalError } from "../../until/swal";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 interface RegisterData {
   email: string;
   password: string;
@@ -43,7 +43,7 @@ const Login: NextPage = () => {
         if (!res?.ok) {
           return swalError("Tên đăng nhập hoặc mật khẩu không đúng!");
         }
-        toast('🦄 Đăng nhập thành công!', {
+        toast("🦄 Đăng nhập thành công!", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -51,7 +51,7 @@ const Login: NextPage = () => {
           draggable: true,
           progress: undefined,
           theme: "light",
-          });
+        });
       })
       .catch((err) => {});
   };
