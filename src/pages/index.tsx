@@ -80,7 +80,7 @@ const Home: React.FC<RootObject> = (categories) => {
                               <LazyLoadImage
                                 effect="blur"
                                 src="https://placeimg.com/300/200/arch"
-                                className=" aspect-[1/1] w-full object-cover"
+                                className="aspect-[1/1] w-full object-cover"
                               />
                             </figure>
                             <div className="card-body font-bold">

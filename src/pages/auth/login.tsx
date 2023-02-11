@@ -1,10 +1,10 @@
 import type { NextPage } from "next";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useSession } from "next-auth/react";
 import { swalError } from "../../until/swal";
 import { toast } from "react-toastify";
+import Link from "next/link";
+
 interface RegisterData {
   email: string;
   password: string;
@@ -14,16 +14,6 @@ const Login: NextPage = () => {
   const [registerData, setRegisterData] = useState<RegisterData>({
     email: "",
     password: "",
-  });
-
-  const { data: session, status } = useSession();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (session) {
-      router.push("/");
-    }
   });
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -43,7 +33,7 @@ const Login: NextPage = () => {
         if (!res?.ok) {
           return swalError("Tên đăng nhập hoặc mật khẩu không đúng!");
         }
-        toast("🦄 Đăng nhập thành công!", {
+        toast("Đăng nhập thành công!", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,
@@ -58,39 +48,56 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <div className="bg-grey-lighter flex min-h-screen flex-col">
-        <div className="container mx-auto flex max-w-sm flex-1 flex-col items-center justify-center px-2">
-          <div className="w-full rounded bg-white px-6 py-8 text-black shadow-md">
-            <form onSubmit={handleSubmit}>
-              <label>
-                Email:
-                <input
-                  className="border-grey-light mb-4 block w-full rounded border p-3"
-                  type="email"
-                  name="email"
-                  value={registerData.email}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <br />
-              <label>
-                Password:
-                <input
-                  className="border-grey-light mb-4 block w-full rounded border p-3"
-                  type="password"
-                  name="password"
-                  value={registerData.password}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <br />
-              <button
-                className="hover:bg-green-dark my-1 w-full rounded bg-green-500 py-3 text-center text-white focus:outline-none"
-                type="submit"
-              >
-                Login
-              </button>
-            </form>
+      <div className="flex min-h-screen flex-col">
+        <div className="phone-3 artboard mx-auto flex items-center justify-center">
+          <div className="w-full text-base-content">
+            <h1 className="mb-2 p-2 text-center text-xl md:text-2xl">
+              Đăng nhập đi nào!
+            </h1>
+            <div className="rounded bg-base-300  px-6 py-8 shadow-md shadow-white">
+              <form onSubmit={handleSubmit}>
+                <div className="card-body">
+                  <div className="form-control">
+                    <label className="label">Email:</label>
+                    <input
+                      className="input-bordered input w-full max-w-xs"
+                      type="email"
+                      name="email"
+                      value={registerData.email}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label">Mật khẩu:</label>
+                    <input
+                      className="input-bordered input w-full max-w-xs"
+                      type="password"
+                      name="password"
+                      value={registerData.password}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  <label className="label">
+                    <div className="link-hover label-text-alt link">
+                      Quên mật khẩu
+                    </div>
+                  </label>
+                  <div className="form-control mt-2">
+                    <button className="btn-primary btn" type="submit">
+                      Đăng Nhập
+                    </button>
+                  </div>
+                  <div className="formt-control mt-2 flex justify-between font-medium text-lg">
+                    <Link className="link-success link" href="/">
+                      Trang Chủ
+                    </Link>
+                    <Link className="link-accent link" href="/auth/register">
+                      Đăng kí
+                    </Link>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

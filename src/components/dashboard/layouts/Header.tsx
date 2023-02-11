@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { signOut } from "next-auth/react";
+import { getLocal } from "../../../until";
 
 const Header = () => {
+  const [theme, setTheme] = React.useState("emerald");
+  useEffect(() => {
+    document
+      ?.querySelector("html")
+      ?.setAttribute("data-theme", getLocal("data-theme"));
+    setTheme(getLocal("data-theme"));
+  }, []);
   return (
     <div className="navbar border-b bg-base-100">
       <label
@@ -14,7 +22,7 @@ const Header = () => {
       </label>
       <div className="flex-1"></div>
       <div className="flex-none">
-        <div className="dropdown-end dropdown">
+        <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
             <div className="w-10 rounded-full">
               <img src="https://placeimg.com/80/80/people" />

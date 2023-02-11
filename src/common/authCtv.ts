@@ -3,7 +3,7 @@ import { unstable_getServerSession } from "next-auth";
 
 import { authOptions } from "../pages/api/auth/[...nextauth]";
 
-export const requireAdmin =
+export const requireCtv =
   (func: GetServerSideProps) => async (ctx: GetServerSidePropsContext) => {
     const session = await unstable_getServerSession(
       ctx.req,
@@ -18,7 +18,7 @@ export const requireAdmin =
         },
       };
     }
-    if (session.user.role != "ADMIN") {
+    if (session.user.role != "CTV" && session.user.role != "ADMIN") {
       return {
         redirect: {
           destination: "/",

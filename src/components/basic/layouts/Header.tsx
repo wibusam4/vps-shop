@@ -1,4 +1,4 @@
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faTableList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { getLocal, setLocal } from "../../../until/index";
 interface HeaderProps {}
 
 export interface Submenu {
@@ -19,16 +20,60 @@ export interface RootObject {
   submenu: Submenu[];
 }
 
+export const dataTheme = [
+  "dracula",
+  "light",
+  "dark",
+  "cupcake",
+  "bumblebee",
+  "emerald",
+  "corporate",
+  "synthwave",
+  "retro",
+  "cyberpunk",
+  "valentine",
+  "halloween",
+  "garden",
+  "forest",
+  "aqua",
+  "lofi",
+  "pastel",
+  "fantasy",
+  "wireframe",
+  "black",
+  "luxury",
+  "cmyk",
+  "autumn",
+  "business",
+  "acid",
+  "lemonade",
+  "night",
+  "coffee",
+  "winter",
+];
+
 const Header: React.FC<HeaderProps> = ({}) => {
+  const [theme, setTheme] = React.useState("emerald");
   const { data: session } = useSession();
   const getMenu = async () => {
     const response = await axios.get("/api/menu");
     setMenu(response.data);
   };
   const [menu, setMenu] = useState([]);
+
   useEffect(() => {
     getMenu();
+    document
+      ?.querySelector("html")
+      ?.setAttribute("data-theme", getLocal("data-theme"));
+    setTheme(getLocal("data-theme"));
   }, []);
+  
+  const handleChangeTheme = (newTheme: string) => {
+    document?.querySelector("html")?.setAttribute("data-theme", newTheme);
+    localStorage && setLocal("data-theme", newTheme);
+    setTheme(newTheme);
+  };
 
   return (
     <div className="fixed z-10 m-auto w-full bg-base-200">
@@ -111,7 +156,28 @@ const Header: React.FC<HeaderProps> = ({}) => {
               })}
           </ul>
         </div>
-        <div className="navbar-end">
+        <div className="navbar-end gap-x-2">
+          <div className="dropdown dropdown-end">
+            <div tabIndex={0} className=" btn-primary avatar btn p-2">
+              Theme
+            </div>
+            <div
+              tabIndex={0}
+              className="dropdown-content rounded-box menu-compact menu-vertical mt-3 max-h-[300px] w-40 overflow-y-scroll bg-base-100 p-2 shadow"
+            >
+              {dataTheme.map((item) => (
+                <div
+                  key={item}
+                  onClick={() => handleChangeTheme(item)}
+                  className={`block w-full cursor-pointer rounded-md py-1 capitalize ${
+                    theme === item && "bg-primary px-2"
+                  } `}
+                >
+                  <a>{item}</a>
+                </div>
+              ))}
+            </div>
+          </div>
           {!session && (
             <>
               <Link
@@ -125,7 +191,7 @@ const Header: React.FC<HeaderProps> = ({}) => {
           )}
           {session && (
             <>
-              <div className="dropdown dropdown-end ">
+              <div className="dropdown dropdown-end">
                 <label
                   tabIndex={0}
                   className="btn-ghost btn-circle avatar btn border border-black"
@@ -147,7 +213,8 @@ const Header: React.FC<HeaderProps> = ({}) => {
                       <span className="badge">{session.user.name}</span>
                     </a>
                   </li>
-                  {session.user.role === "ADMIN" && (
+                  {(session.user.role === "ADMIN" ||
+                    session.user.role === "CTV") && (
                     <li>
                       <Link className="" href="/dashboard">
                         Dashboard

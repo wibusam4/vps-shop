@@ -1,4 +1,4 @@
-import { requireAuth } from "../../common/authAdmin";
+import { requireAdmin } from "../../common/authAdmin";
 import Main from "../../components/dashboard/layouts/Main";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -81,7 +81,7 @@ const User: React.FC<RootObject> = ({ users }) => {
 };
 export default User;
 
-export const getServerSideProps = requireAuth(async (ctx) => {
+export const getServerSideProps = requireAdmin(async (ctx) => {
   const users = JSON.parse(JSON.stringify(await prisma.user.findMany()));
   return { props: { users } };
 });

@@ -1,4 +1,4 @@
-import { requireAuth } from "../../common/authAdmin";
+import { requireAdmin } from "../../common/authAdmin";
 import Main from "../../components/dashboard/layouts/Main";
 import { prisma } from "../../server/db";
 import axios from "axios";
@@ -98,7 +98,7 @@ const Category: React.FC<RootObject> = (categories) => {
 };
 export default Category;
 
-export const getServerSideProps = requireAuth(async (ctx) => {
+export const getServerSideProps = requireAdmin(async (ctx) => {
   const categories = JSON.parse(
     JSON.stringify(await prisma.category.findMany())
   );

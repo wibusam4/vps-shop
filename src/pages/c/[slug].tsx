@@ -68,7 +68,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 };
 
 const SlugCategory: React.FC<RootObject> = (category) => {
-
   return (
     <>
       <Meta
@@ -79,7 +78,7 @@ const SlugCategory: React.FC<RootObject> = (category) => {
         <h1 className="text-center text-4xl font-bold uppercase text-primary">
           Bảng giá {category.category.name}
         </h1>
-        <div className="flex flex-wrap gap-y-4 rounded-b-lg bg-base-200 p-4 mt-8">
+        <div className="mt-8 flex flex-wrap gap-y-4 rounded-b-lg bg-base-200 p-4">
           {category.category.products.length > 0 &&
             category.category.products.map((product: Product) => {
               return (
@@ -87,7 +86,7 @@ const SlugCategory: React.FC<RootObject> = (category) => {
                   key={product.id}
                   className="w-full p-2 md:w-[50%] lg:w-[25%]"
                 >
-                  <div className="card-compact card border border-black bg-base-100 shadow-xl">
+                  <div className="card card-compact border border-black bg-base-100 shadow-xl">
                     <figure className="aspect-[1/1] w-full">
                       <LazyLoadImage
                         effect="blur"
@@ -109,16 +108,19 @@ const SlugCategory: React.FC<RootObject> = (category) => {
                       </p>
                       <p className="text-center text-sm">OS: {product.os}</p>
                       <p
-                        className={`text-center text-sm ${
-                           getColorStatus(product.status)
-                        }`}
+                        className={`text-center text-sm ${getColorStatus(
+                          product.status
+                        )}`}
                       >
                         Trạng thái: {getStatus(product.status)}
                       </p>
                       <div className="card-actions justify-end">
-                        <button className="btn-primary btn w-full">
-                          <Link href={product.slug}>Mua Hàng</Link>
-                        </button>
+                        <Link
+                          className="btn-primary btn w-full"
+                          href={product.slug}
+                        >
+                          Mua Hàng
+                        </Link>
                       </div>
                     </div>
                   </div>

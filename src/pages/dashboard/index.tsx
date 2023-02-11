@@ -1,16 +1,10 @@
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import type { NextPage } from "next";
-import { useSession, signOut } from "next-auth/react";
-import { requireAuth } from "../../common/authAdmin";
+import { requireCtv } from "../../common/authCtv";
 import BoxInfor from "../../components/dashboard/BoxInfor";
 import Main from "../../components/dashboard/layouts/Main";
 
-export const getServerSideProps = requireAuth(async (ctx) => {
-  return { props: {} };
-});
-
 const Dashboard: NextPage = () => {
-  const { data } = useSession();
 
   return (
     <Main>
@@ -51,3 +45,7 @@ const Dashboard: NextPage = () => {
 };
 
 export default Dashboard;
+
+export const getServerSideProps = requireCtv(async (ctx) => {
+  return { props: {} };
+});

@@ -2,10 +2,10 @@ import EditProduct from "../../components/dashboard/form/EditProduct";
 import AddProduct from "../../components/dashboard/form/AddProduct";
 import Main from "../../components/dashboard/layouts/Main";
 import { Category } from "../../model/Category.model";
-import { requireAuth } from "../../common/authAdmin";
+import { requireCtv } from "../../common/authCtv";
 import { Product } from "../../model/Product.model";
 import { prisma } from "../../server/db";
-import { formatNumber, getBageStatus, menuProduct } from "../../until";
+import { formatPrices, getBageStatus, menuProduct } from "../../until";
 import Modal from "../../components/dashboard/Modal";
 import moment from "moment";
 import Swal from "sweetalert2";
@@ -64,7 +64,7 @@ const Product: React.FC<RootObject> = (data) => {
                       <td>{product.name}</td>
                       <td>{product.category.name}</td>
                       <td className="text-accent">
-                        {formatNumber(product.price)}
+                        {formatPrices(product.price)}
                       </td>
                       <td>{product.cpu}</td>
                       <td>{product.ram}</td>
@@ -106,7 +106,7 @@ const Product: React.FC<RootObject> = (data) => {
 };
 export default Product;
 
-export const getServerSideProps = requireAuth(async (ctx) => {
+export const getServerSideProps = requireCtv(async (ctx) => {
   const products = JSON.parse(
     JSON.stringify(
       await prisma.product.findMany({ include: { category: true } })
