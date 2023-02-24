@@ -12,3 +12,10 @@ export interface FormUser {
   role: string;
   status: string;
 }
+
+export interface FormAuth {
+  name?: string,
+  email:string,
+  password:string,
+  passWordConfirm?:string
+}

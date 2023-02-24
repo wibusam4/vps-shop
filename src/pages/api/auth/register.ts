@@ -17,7 +17,7 @@ const register = async (req: NextApiRequest, res: NextApiResponse) => {
       });
 
       return res.status(200).end();
-    } catch (e) {
+    } catch (e: any) {
       return res.status(503).json({ error: e.code });
     }
   } else {

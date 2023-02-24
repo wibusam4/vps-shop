@@ -4,6 +4,7 @@ import { prisma } from "../../../server/db";
 import { verify } from "argon2";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../../../env/server.mjs";
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
@@ -45,29 +46,23 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "credentials",
       credentials: {},
-      authorize: async (credentials: any, res) => {
+      authorize: async (credentials) => {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
         try {
-          const user = await prisma.user.findFirst({
+          const foundUser = await prisma.user.findFirst({
             where: {
-              email: credentials.email,
+              email: email,
             },
           });
-          if (!user) return null;
-          const isValidPassword = await verify(
-            user.password,
-            credentials.password
-          );
+          if (!foundUser) return null;
+          const isValidPassword = await verify(foundUser.password, password);
           if (!isValidPassword) return null;
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            money: user.money,
-            role: user.role,
-            status: user.status,
-          };
-        } catch (err) {
-          console.log("Authorize error:", err);
+          return foundUser as any;
+        } catch (err: any) {
+          throw new Error("Authorize error:", err);
         }
       },
     }),

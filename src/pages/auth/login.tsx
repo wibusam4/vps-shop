@@ -1,31 +1,26 @@
 import type { NextPage } from "next";
-import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { swalError } from "../../until/swal";
 import { toast } from "react-toastify";
-import Link from "next/link";
+import * as Yup from "yup";
+import { useRouter } from "next/router";
+import { FormAuth } from "../../model/User.model";
+import { Field, Form, Formik, FormikProps } from "formik";
+import ErrorForm from "../../components/dashboard/form/Error";
+import { useEffect, useState } from "react";
+import { getLocal } from "../../until";
 
-interface RegisterData {
-  email: string;
-  password: string;
-}
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().required("Không được để trống"),
+  password: Yup.string().required("Không được để trống"),
+});
 
 const Login: NextPage = () => {
-  const [registerData, setRegisterData] = useState<RegisterData>({
-    email: "",
-    password: "",
-  });
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setRegisterData({ ...registerData, [name]: value });
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-
+  const [theme, setTheme] = useState("emerald");
+  const router = useRouter();
+  const handleSubmit = async (value: FormAuth) => {
     signIn("credentials", {
-      ...registerData,
+      ...value,
       callbackUrl: `${window.location.origin}/`,
       redirect: false,
     })
@@ -36,17 +31,20 @@ const Login: NextPage = () => {
         toast("Đăng nhập thành công!", {
           position: "top-right",
           autoClose: 2000,
-          hideProgressBar: false,
           closeOnClick: true,
-          draggable: true,
-          progress: undefined,
           theme: "light",
         });
+        router.push("/auth/login");
       })
       .catch((err) => {});
   };
-
-  return (
+  useEffect(() => {
+    document
+      ?.querySelector("html")
+      ?.setAttribute("data-theme", getLocal("data-theme"));
+    setTheme(getLocal("data-theme"));
+  }, []);
+   return (
     <>
       <div className="flex min-h-screen flex-col">
         <div className="phone-3 artboard mx-auto flex items-center justify-center">
@@ -55,48 +53,55 @@ const Login: NextPage = () => {
               Đăng nhập đi nào!
             </h1>
             <div className="rounded bg-base-300  px-6 py-8 shadow-md shadow-white">
-              <form onSubmit={handleSubmit}>
-                <div className="card-body">
-                  <div className="form-control">
-                    <label className="label">Email:</label>
-                    <input
-                      className="input-bordered input w-full max-w-xs"
-                      type="email"
-                      name="email"
-                      value={registerData.email}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="form-control">
-                    <label className="label">Mật khẩu:</label>
-                    <input
-                      className="input-bordered input w-full max-w-xs"
-                      type="password"
-                      name="password"
-                      value={registerData.password}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <label className="label">
-                    <div className="link-hover label-text-alt link">
-                      Quên mật khẩu
-                    </div>
-                  </label>
-                  <div className="form-control mt-2">
-                    <button className="btn-primary btn" type="submit">
-                      Đăng Nhập
-                    </button>
-                  </div>
-                  <div className="formt-control mt-2 flex justify-between font-medium text-lg">
-                    <Link className="link-success link" href="/">
-                      Trang Chủ
-                    </Link>
-                    <Link className="link-accent link" href="/auth/register">
-                      Đăng kí
-                    </Link>
-                  </div>
-                </div>
-              </form>
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: "",
+                }}
+                validationSchema={LoginSchema}
+                onSubmit={(values) => {
+                  handleSubmit(values);
+                }}
+              >
+                {(props: FormikProps<FormAuth>) => {
+                  const { touched, errors } = props;
+                  return (
+                    <Form>
+                      <div className="form-control mb-4 w-full">
+                        <label className="label">
+                          <span>Email:</span>
+                        </label>
+                        <Field
+                          className="input-bordered input w-full"
+                          name="email"
+                        />
+                        <ErrorForm
+                          error={errors.email}
+                          isTouched={touched.email}
+                        />
+                        <label className="label">
+                          <span >Mật khẩu:</span>
+                        </label>
+                        <Field
+                          className="input-bordered input w-full"
+                          name="password"
+                          type="password"
+                        />
+                        <ErrorForm
+                          error={errors.password}
+                          isTouched={touched.password}
+                        />
+                        <button
+                          className="btn-secondary btn mt-4"
+                          type="submit"
+                        >
+                          Đăng Nhập
+                        </button>
+                      </div>
+                    </Form>
+                  );
+                }}
+              </Formik>
             </div>
           </div>
         </div>

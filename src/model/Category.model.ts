@@ -18,7 +18,7 @@ export interface Category {
   name: string;
   slug: string;
   status: string;
-  product: Product[];
+  products: Product[];
   createdAt: Date;
   updatedAt: Date;
 }

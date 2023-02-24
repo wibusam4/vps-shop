@@ -1,4 +1,4 @@
-import { faCaretDown, faTableList } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({}) => {
       ?.setAttribute("data-theme", getLocal("data-theme"));
     setTheme(getLocal("data-theme"));
   }, []);
-  
+
   const handleChangeTheme = (newTheme: string) => {
     document?.querySelector("html")?.setAttribute("data-theme", newTheme);
     localStorage && setLocal("data-theme", newTheme);
@@ -158,8 +158,30 @@ const Header: React.FC<HeaderProps> = ({}) => {
         </div>
         <div className="navbar-end gap-x-2">
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} className=" btn-primary avatar btn p-2">
-              Theme
+            <div tabIndex={0} className="btn btn-ghost avatar btn-circle flex h-full">
+              <span className="svg-icon svg-icon-primary svg-icon-2x">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="44px"
+                  height="44px"
+                  viewBox="0 0 24 24"
+                  version="1.1"
+                >
+                  <g
+                    stroke="none"
+                    strokeWidth="1"
+                    fill="none"
+                    fillRule="evenodd"
+                  >
+                    <rect x="0" y="0" width="24" height="24" />
+                    <path
+                      d="M12,20 C7.581722,20 4,16.418278 4,12 C4,7.581722 7.581722,4 12,4 C16.418278,4 20,7.581722 20,12 C20,16.418278 16.418278,20 12,20 Z M12,5.99999664 C8.6862915,6 6,8.6862915 6,12 C6,15.3137085 8.6862915,18 12,18.0000034 L12,5.99999664 Z"
+                      fill="#000000"
+                      fillRule="nonzero"
+                    />
+                  </g>
+                </svg>
+              </span>
             </div>
             <div
               tabIndex={0}
@@ -181,11 +203,10 @@ const Header: React.FC<HeaderProps> = ({}) => {
           {!session && (
             <>
               <Link
-                className="btn-accent btn-active btn"
+                className="btn-accent btn-active btn-circle btn"
                 href="/auth/login"
-                target=""
               >
-                <h3 className="text-xl font-bold">Đăng Nhập</h3>
+                <FontAwesomeIcon className="w-4" icon={faRightFromBracket} />
               </Link>
             </>
           )}
@@ -194,12 +215,12 @@ const Header: React.FC<HeaderProps> = ({}) => {
               <div className="dropdown dropdown-end">
                 <label
                   tabIndex={0}
-                  className="btn-ghost btn-circle avatar btn border border-black"
+                  className="btn-ghost btn-circle avatar btn p-0"
                 >
                   <div className="w-10 rounded-full">
                     <LazyLoadImage
                       effect="blur"
-                      src="https://placeimg.com/80/80/people"
+                      src={`https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${session.user.name}`}
                     />
                   </div>
                 </label>
