@@ -5,10 +5,21 @@ import { verify } from "argon2";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../../../env/server.mjs";
 
+const updateUser = async (id: any) => {
+  const user  = prisma.user.findUnique({
+    where: { id },
+  });
+  return user;
+};
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     jwt: async ({ token, user }) => {
+      if(!user && token){
+        const newUser = await updateUser(token.id)
+        token.money = newUser?.money
+      }
       if (user) {
         token.id = user.id;
         token.role = user.role;

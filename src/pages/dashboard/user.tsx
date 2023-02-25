@@ -8,6 +8,7 @@ import Modal from "../../components/dashboard/Modal";
 import EditUser from "../../components/dashboard/form/EditUser";
 import { useRouter } from "next/router";
 import { getBageStatus } from "../../until";
+import ControlUser from "../../components/dashboard/form/ControlUser";
 
 interface RootObject {
   users: User[];
@@ -40,7 +41,7 @@ const User: React.FC<RootObject> = ({ users }) => {
             <table className="table w-full">
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>STT</th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Money</th>
@@ -50,9 +51,9 @@ const User: React.FC<RootObject> = ({ users }) => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
+                {users.map((user, index) => (
                   <tr key={user.id}>
-                    <th>{user.id}</th>
+                    <th>{index}</th>
                     <td>{user.name}</td>
                     <td>{user.email}</td>
                     <td>{user.money}</td>
@@ -61,6 +62,9 @@ const User: React.FC<RootObject> = ({ users }) => {
                     <td className="flex gap-x-2">
                       <Modal id={user.id} name="Sửa">
                         <EditUser user={user} />
+                      </Modal>
+                      <Modal id={`edit-${user.id}`} name="Thao Tác">
+                        <ControlUser user={user} />
                       </Modal>
                       <button
                         onClick={() => handleDeleteUser(user.id)}

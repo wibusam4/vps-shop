@@ -14,8 +14,14 @@ export interface FormUser {
 }
 
 export interface FormAuth {
-  name?: string,
-  email:string,
-  password:string,
-  passWordConfirm?:string
+  name?: string;
+  email: string;
+  password: string;
+  passWordConfirm?: string;
+}
+
+export interface FormControl {
+  id: string;
+  money: number;
+  description: string;
 }

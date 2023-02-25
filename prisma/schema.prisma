@@ -8,15 +8,18 @@ datasource db {
 }
 
 model User {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    id        String      @id @default(auto()) @map("_id") @db.ObjectId
     name      String
-    email     String   @unique
+    email     String      @unique
     password  String
-    money     Int      @default(0)
-    role      Role     @default(USER)
-    status    Status   @default(ACTIVE)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    money     Int         @default(0)
+    role      Role        @default(USER)
+    status    Status      @default(ACTIVE)
+    transMomo TransMomo[]
+    transTsr  TransTsr[]
+    transUser TransUser[]
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
 }
 
 model Product {
@@ -43,6 +46,42 @@ model Category {
     status    Status    @default(ACTIVE)
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
+}
+
+model TransMomo {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String   @db.ObjectId
+    tranId      String
+    money       Int
+    status      String
+    description String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt()
+}
+
+model TransTsr {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String   @db.ObjectId
+    tranId      String
+    money       Int
+    status      String
+    description String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt()
+}
+
+model TransUser {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    user        User     @relation(fields: [userId], references: [id])
+    userId      String   @db.ObjectId
+    oldMoney    Int
+    money       Int
+    newMoney    Int
+    description String
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt()
 }
 
 enum Status {

@@ -9,9 +9,8 @@ const CardSchema = Yup.object().shape({
   code: Yup.string().required("Không được để trống"),
 });
 
-interface FormCardProps {}
 
-const FormCard: React.FC<FormCardProps> = () => {
+const FormCard = () => {
   const router = useRouter();
   const handelSubmit = async (card: any) => {};
 
@@ -24,7 +23,7 @@ const FormCard: React.FC<FormCardProps> = () => {
         }}
         validationSchema={CardSchema}
         onSubmit={(values) => {
-          handelSubmit(values);
+          //handelSubmit(values);
         }}
       >
         {(props: FormikProps<Card>) => {

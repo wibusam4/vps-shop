@@ -21,7 +21,7 @@ const Product: React.FC<RootObject> = (data) => {
   const router = useRouter();
   const handelDelete = async (product: any) => {
     Swal.fire({
-      title: `Bạn muốn xóa ID: ${product.id}`,
+      title: `Xóa ${product.name}`,
       icon: "question",
       showCancelButton: true,
     }).then((result) => {

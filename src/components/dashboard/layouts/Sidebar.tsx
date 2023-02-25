@@ -1,4 +1,11 @@
-import { faHome, faUser, faShop, faBagShopping } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faUser,
+  faShop,
+  faBagShopping,
+  faCreditCard,
+  faChartLine,
+} from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import React from "react";
 import ItemMenu from "../ItemMenu";
@@ -8,6 +15,8 @@ const Menu = [
   { name: "Thành Viên", link: "/dashboard/user", icon: faUser },
   { name: "Sản Phẩm", link: "/dashboard/product", icon: faShop },
   { name: "Category", link: "/dashboard/category", icon: faBagShopping },
+  { name: "Giao dịch", link: "/dashboard/transaction", icon: faChartLine },
+  { name: "Momo", link: "/dashboard/momo", icon: faCreditCard },
 ];
 const Sidebar: React.FC = () => {
   return (
@@ -28,11 +37,16 @@ const Sidebar: React.FC = () => {
           </Link>
         </div>
         <div className="h-4"></div>
-        
+
         <ul className="menu menu-compact flex flex-col p-0 px-4">
-        {Menu.map((item, index) => {
+          {Menu.map((item, index) => {
             return (
-                <ItemMenu key={index} name={item.name} link={item.link} icon={item.icon} />
+              <ItemMenu
+                key={index}
+                name={item.name}
+                link={item.link}
+                icon={item.icon}
+              />
             );
           })}
         </ul>

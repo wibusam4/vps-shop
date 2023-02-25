@@ -50,7 +50,7 @@ const Category: React.FC<RootObject> = (categories) => {
             <table className="table w-full">
               <thead>
                 <tr>
-                  <th>ID</th>
+                  <th>STT</th>
                   <th>Name</th>
                   <th>Slug</th>
                   <th>Status</th>
@@ -61,9 +61,9 @@ const Category: React.FC<RootObject> = (categories) => {
               </thead>
               <tbody className="border">
                 {categories &&
-                  categories?.categories.map((category: any) => (
+                  categories?.categories.map((category: any, index) => (
                     <tr key={category.id}>
-                      <th>{category.id}</th>
+                      <th>{index}</th>
                       <td>{category.name}</td>
                       <td>{category.slug}</td>
                       <td>

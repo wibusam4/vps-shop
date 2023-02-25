@@ -16,24 +16,62 @@ export default async function handler(
   }
   switch (req.method) {
     case "GET":
-      const allUsers = await prisma.user.findMany({});
-      res.status(200).json({ success: "true", message: allUsers });
+      getAllUsers(req, res);
+      break;
+    case "POST":
+      editMoneyUser(req, res);
       break;
     case "PUT":
-      const userUpdate = await prisma.user.update({
-        where: { id: req.body.id },
-        data: { role: req.body.role, status: req.body.status },
-      });
-    res.status(201).json(userUpdate);
+      editUserInfor(req, res);
       break;
     case "DELETE":
-      const userDelete = await prisma.user.delete({
-        where: { id: req.body.id },
-      });
-      res.status(201).json(userDelete);
+      deleteUser(req, res);
       break;
     default:
-      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "PUT", "DELETE", "POST"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+const editMoneyUser = async (req: NextApiRequest, res: NextApiResponse) => {
+  const user = await prisma.user.findFirst({ where: { id: req.body.id } });
+  if (!user) throw new Error("User Not Valid");
+  const { money, description } = req.body;
+  const oldMoney = user.money;
+  const newMoney = user.money + money;
+  await Promise.all([
+    prisma.user.update({ where: { id: user.id }, data: { money: newMoney } }),
+    prisma.transUser.create({
+      data: {
+        userId: user.id,
+        oldMoney,
+        money,
+        newMoney,
+        description,
+      },
+    }),
+  ]);
+
+  const updatedUser = await prisma.user.findUnique({ where: { id: user.id } });
+  res.status(201).json({ success: true, message: updatedUser });
+};
+
+const getAllUsers = async (req: NextApiRequest, res: NextApiResponse) => {
+  const allUsers = await prisma.user.findMany({});
+  res.status(200).json({ success: true, message: allUsers });
+};
+
+const editUserInfor = async (req: NextApiRequest, res: NextApiResponse) => {
+  const userUpdate = await prisma.user.update({
+    where: { id: req.body.id },
+    data: { role: req.body.role, status: req.body.status },
+  });
+  res.status(201).json({ success: true, message: userUpdate });
+};
+
+const deleteUser = async (req: NextApiRequest, res: NextApiResponse) => {
+  const userDelete = await prisma.user.delete({
+    where: { id: req.body.id },
+  });
+  res.status(201).json({ success: true, message: userDelete });
+};
