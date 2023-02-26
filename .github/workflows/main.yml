@@ -9,19 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Main Branch
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          ref: main
+     - uses: actions/checkout@v3
+     - uses: actions/setup-node@v3
+       with:
+        node-version: "16.x"
+     - name: Install Dependencies
+       run: npm install
 
-      - name: Use Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: "16.x"
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Application
-        run: npm run build
+     - name: Build Application
+       run: npm run build
