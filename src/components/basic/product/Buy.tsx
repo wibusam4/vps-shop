@@ -1,4 +1,4 @@
-import { icon } from "@fortawesome/fontawesome-svg-core";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import Swal from "sweetalert2";
 import { Product } from "../../../model/Product.model";
@@ -28,6 +28,10 @@ const Buy: React.FC<BuyProps> = ({ product }) => {
         icon: 'question',
         showConfirmButton:true,
         showCancelButton:true
+      }).then((result)=>{
+        if(result.isConfirmed){
+          axios.post('/api/order', {id:product.id})
+        }
       })
   };
   return (

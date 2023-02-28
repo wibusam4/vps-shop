@@ -18,6 +18,7 @@ model User {
     transMomo TransMomo[]
     transTsr  TransTsr[]
     transUser TransUser[]
+    order     Order[]
     createdAt DateTime    @default(now())
     updatedAt DateTime    @updatedAt
 }
@@ -34,6 +35,7 @@ model Product {
     bandwidth  String
     status     Status   @default(ACTIVE)
     slug       String   @unique
+    order      Order[]
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
 }
@@ -46,6 +48,35 @@ model Category {
     status    Status    @default(ACTIVE)
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
+}
+
+model Order {
+    id        String        @id @default(auto()) @map("_id") @db.ObjectId
+    user      User          @relation(fields: [userId], references: [id])
+    userId    String        @db.ObjectId
+    product   Product       @relation(fields: [productId], references: [id])
+    productId String        @db.ObjectId
+    seller    String?
+    note      String?
+    infor     String?
+    status    Int           @default(1)
+    account   AccountOrder?
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
+}
+
+model AccountOrder {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    order     Order    @relation(fields: [orderId], references: [id])
+    orderId   String   @unique @db.ObjectId
+    seller    String?
+    ip        String?
+    username  String?
+    password  String?
+    note      String?
+    infor     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model TransMomo {

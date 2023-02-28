@@ -34,7 +34,7 @@ const Login: NextPage = () => {
           closeOnClick: true,
           theme: "light",
         });
-        router.push("/auth/login");
+        router.push("/");
       })
       .catch((err) => {});
   };
