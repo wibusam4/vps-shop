@@ -1,39 +1,43 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import type { NextPage } from "next";
+import { faBagShopping, faCartShopping, faShop, faUser } from "@fortawesome/free-solid-svg-icons";
 import { requireCtv } from "../../common/authCtv";
 import BoxInfor from "../../components/dashboard/BoxInfor";
 import Main from "../../components/dashboard/layouts/Main";
+import { prisma } from "../../server/db";
 
-const Dashboard: NextPage = () => {
+interface RootObject {
+  allData: any;
+}
+const Dashboard: React.FC<RootObject> = (allData) => {
+  console.log(allData);
 
   return (
     <Main>
       <div className="bg-primary pb-12 pt-12">
         <div className="mx-auto w-full px-4 md:px-10">
           <div>
-            <div className="flex flex-wrap justify-center gap-x-10 gap-y-10">
+            <div className="flex flex-wrap">
               <BoxInfor
                 name="Người Dùng"
-                value={1123}
+                value={allData.allData[0]}
                 icon={faUser}
                 color="text-error"
               />
               <BoxInfor
-                name="Danh Mục"
-                value={1223}
-                icon={faUser}
+                name="Sản Phẩm"
+                value={allData.allData[1]}
+                icon={faShop}
                 color="text-info"
               />
               <BoxInfor
-                name="Sản Phẩm"
-                value={1323}
-                icon={faUser}
+                name="Danh Mục"
+                value={allData.allData[2]}
+                icon={faBagShopping}
                 color="text-warning"
               />
               <BoxInfor
-                name="Doanh Thu"
-                value={1423}
-                icon={faUser}
+                name="Tổng Đơn Hàng"
+                value={allData.allData[3]}
+                icon={faCartShopping}
                 color="text-success"
               />
             </div>
@@ -47,5 +51,15 @@ const Dashboard: NextPage = () => {
 export default Dashboard;
 
 export const getServerSideProps = requireCtv(async (ctx) => {
-  return { props: {} };
+  const allData = JSON.parse(
+    JSON.stringify(
+      await prisma.$transaction([
+        prisma.user.count(),
+        prisma.product.count(),
+        prisma.category.count(),
+        prisma.order.count(),
+      ])
+    )
+  );
+  return { props: { allData } };
 });

@@ -5,9 +5,10 @@ import {
   faBagShopping,
   faCreditCard,
   faChartLine,
+  faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ItemMenu from "../ItemMenu";
 
 const Menu = [
@@ -15,7 +16,12 @@ const Menu = [
   { name: "Thành Viên", link: "/dashboard/user", icon: faUser },
   { name: "Sản Phẩm", link: "/dashboard/product", icon: faShop },
   { name: "Category", link: "/dashboard/category", icon: faBagShopping },
-  { name: "Giao dịch", link: "/dashboard/transaction", icon: faChartLine },
+  {
+    name: "Order",
+    link: "/dashboard/order",
+    icon: faCartShopping,
+  },
+  { name: "Dòng Tiền", link: "/dashboard/transaction", icon: faChartLine },
   { name: "Momo", link: "/dashboard/momo", icon: faCreditCard },
 ];
 const Sidebar: React.FC = () => {

@@ -12,6 +12,7 @@ import Menu from "../icon/Menu";
 import Theme from "../icon/Theme";
 import setTheme from "../../hooks/setTheme";
 import { SubMenu, Menus } from "../../../model/Menu.model";
+import { formatPrices } from "../../../until/index";
 interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = ({}) => {
@@ -115,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({}) => {
           {!session && (
             <>
               <Link
-                className="btn-accent btn-active btn-circle btn"
+                className="btn-accent btn-active btn-sm btn-circle btn md:btn-md "
                 href="/auth/login"
               >
                 <FontAwesomeIcon className="w-4" icon={faRightFromBracket} />
@@ -127,7 +128,7 @@ const Header: React.FC<HeaderProps> = ({}) => {
               <div className="dropdown dropdown-end">
                 <label
                   tabIndex={0}
-                  className="btn-ghost btn-circle avatar btn p-0"
+                  className="btn-ghost btn-sm btn-circle avatar btn p-0 md:btn-md"
                 >
                   <div className="w-10 rounded-full">
                     <LazyLoadImage
@@ -138,12 +139,20 @@ const Header: React.FC<HeaderProps> = ({}) => {
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
+                  className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 font-medium shadow"
                 >
                   <li>
                     <a className="justify-between">
                       Profile
                       <span className="badge">{session.user.name}</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a className="justify-between">
+                      Số dư
+                      <span className="badge-error badge">
+                        {formatPrices(session.user.money)}
+                      </span>
                     </a>
                   </li>
                   {(session.user.role === "ADMIN" ||
@@ -155,7 +164,7 @@ const Header: React.FC<HeaderProps> = ({}) => {
                     </li>
                   )}
                   <li onClick={() => signOut()}>
-                    <a>Logout</a>
+                    <a>Đăng xuất</a>
                   </li>
                 </ul>
               </div>

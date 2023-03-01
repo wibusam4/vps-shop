@@ -2,7 +2,6 @@ import { prisma } from "../../server/db";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth/next";
 import { authOptions } from "./auth/[...nextauth]";
-import { strict } from "assert";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,6 +15,9 @@ export default async function handler(
   }
 
   switch (req.method) {
+    case "GET":
+      countOrder(req, res);
+      break;
     case "POST":
       addOrder(req, res, session.user.id);
       break;
@@ -26,10 +28,23 @@ export default async function handler(
       //deleteProduct(req, res);
       break;
     default:
-      res.setHeader("Allow", ["POST", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+const countOrder = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const count = await prisma.order.count({
+      where: {
+        status: 1,
+      },
+    });
+    return res.status(200).json({ success: true, message: count });
+  } catch (error) {
+    return res.status(503).json(error);
+  }
+};
 
 const addOrder = async (
   req: NextApiRequest,
@@ -48,24 +63,31 @@ const addOrder = async (
         where: { id: userId },
       })),
     ]);
-    console.log(productId);
-
     if (!user || !product)
       return res.status(201).json({ success: false, message: "Lỗi" });
     if (user?.money < product?.price)
-      return res
-        .status(201)
-        .json({
-          succes: false,
-          message: "Không đủ tiền",
-          price: product,
-          money: user.money,
-        });
+      return res.status(201).json({
+        succes: false,
+        message: "Không đủ tiền",
+        price: product,
+        money: user.money,
+      });
     let order;
+    const oldMoney = user.money;
+    const newMoney = user.money - product.price;
     await Promise.all([
       prisma.user.update({
         where: { id: userId },
         data: { money: user.money - product.price },
+      }),
+      prisma.transUser.create({
+        data: {
+          userId: user.id,
+          oldMoney,
+          money: product.price,
+          newMoney,
+          description: `Mua vps ${product.name}`,
+        },
       }),
       (order = prisma.order.create({
         data: {

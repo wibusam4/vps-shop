@@ -10,14 +10,16 @@ interface BoxInforProps {
 }
 const BoxInfor: React.FC<BoxInforProps> = ({ name, value, icon, color }) => {
   return (
-    <div className="stats min-w-full shadow md:min-w-[45%] lg:min-w-[23%]">
-      <div className="stat">
-        <div className={`stat-figure ${color}`}>
-          <FontAwesomeIcon icon={icon} className="text-3xl" />
+    <div className="w-full p-2 md:w-1/2 lg:w-1/3 xl:w-1/4">
+      <div className="stats w-full shadow">
+        <div className="stat">
+          
+          <div className={`stat-figure ${color}`}>
+            <FontAwesomeIcon icon={icon} className="text-3xl" />
+          </div>
+          <div className="stat-title font-bold text-black">{name}</div>
+          <div className={`stat-value mb-1 ${color}`}>{value}</div>
         </div>
-        <div className="stat-title font-bold text-black">{name}</div>
-        <div className={`stat-value mb-1 ${color}`}>{value}</div>
-        <div className="stat-desc">21% more than last month</div>
       </div>
     </div>
   );

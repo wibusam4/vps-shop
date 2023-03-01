@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import { Product } from "../../../model/Product.model";
 import { formatPrices } from "../../../until";
@@ -10,6 +11,7 @@ interface BuyProps {
 
 const Buy: React.FC<BuyProps> = ({ product }) => {
   const { data: session, status } = useSession();
+  const router = useRouter();
   const handleBuyProduct = async (product: any) => {
     if (!session) {
       return Swal.fire({
@@ -24,15 +26,17 @@ const Buy: React.FC<BuyProps> = ({ product }) => {
       });
     }
     return Swal.fire({
-        title: "Bạn muốn mua không!",
-        icon: 'question',
-        showConfirmButton:true,
-        showCancelButton:true
-      }).then((result)=>{
-        if(result.isConfirmed){
-          axios.post('/api/order', {id:product.id})
-        }
-      })
+      title: "Bạn muốn mua không!",
+      icon: "question",
+      showConfirmButton: true,
+      showCancelButton: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.post("/api/order", { id: product.id }).then((result) => {
+          router.push("/");
+        });
+      }
+    });
   };
   return (
     <div className="font-medium">
