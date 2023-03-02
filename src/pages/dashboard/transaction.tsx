@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import moment from "moment";
 import { formatPrices } from "../../until";
 import { Transaction } from "../../model/Transaction.model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface RootObject {
   transUser: Transaction[];
@@ -16,40 +16,43 @@ const Transaction: React.FC<RootObject> = ({ transUser }) => {
   const router = useRouter();
   const [transaction, setTransaction] = useState(transUser);
   const [transactionTerm, setTransactionTerm] = useState(transUser);
-
+  useEffect(() => {
+    setTransaction(transUser);
+    setTransactionTerm(transUser);
+  }, [transUser]);
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    filteredData(event.target.value)
-  };  
-
-  const filteredData = (value:string) => {
-     setTransaction(transactionTerm.filter((item)=>item.user.email.includes(value)));
+    filteredData(event.target.value);
   };
-  
+
+  const filteredData = (value: string) => {
+    setTransaction(
+      transactionTerm.filter((item) => item.user.email.includes(value))
+    );
+  };
 
   const handelDelete = async (transaction: any) => {
     Swal.fire({
       title: `Bạn muốn xóa ID: ${transaction.id}`,
       icon: "question",
       showCancelButton: true,
-    })
-      .then((result) => {
-        if (result.isConfirmed) {
-          axios
-            .delete("/api/transaction", { data: { id: transaction.id } })
-            .then(() => {
-              router.push(router.asPath);
-              Swal.fire({
-                text: "Xóa thành công",
-                icon: "success",
-              });
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete("/api/transaction", { data: { id: transaction.id } })
+          .then(() => {
+            router.push(router.asPath);
+            Swal.fire({
+              text: "Xóa thành công",
+              icon: "success",
             });
-        }
-      })
-      .catch((error) => {
-        Swal.fire({
-          text: error,
-        });
-      });
+          })
+          .catch((error) => {
+            Swal.fire({
+              text: error,
+            });
+          });
+      }
+    });
   };
 
   return (
@@ -62,7 +65,7 @@ const Transaction: React.FC<RootObject> = ({ transUser }) => {
               <input
                 type="text"
                 placeholder="info@site.com"
-                className="input-bordered focus:outline-none input"
+                className="input-bordered input focus:outline-none"
                 onChange={handleSearch}
               />
             </label>
@@ -139,6 +142,9 @@ export const getServerSideProps = requireAdmin(async (ctx) => {
       await prisma.transUser.findMany({
         include: {
           user: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       })
     )

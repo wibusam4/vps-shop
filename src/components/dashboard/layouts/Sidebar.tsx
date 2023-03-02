@@ -17,7 +17,7 @@ const Menu = [
   { name: "Sản Phẩm", link: "/dashboard/product", icon: faShop },
   { name: "Category", link: "/dashboard/category", icon: faBagShopping },
   {
-    name: "Order",
+    name: "Đơn Hàng",
     link: "/dashboard/order",
     icon: faCartShopping,
   },

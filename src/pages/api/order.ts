@@ -22,7 +22,7 @@ export default async function handler(
       addOrder(req, res, session.user.id);
       break;
     case "PUT":
-      //editProduct(req, res);
+      editOrder(req, res, session.user.email);
       break;
     case "DELETE":
       //deleteProduct(req, res);
@@ -102,10 +102,27 @@ const addOrder = async (
   }
 };
 
-const editProduct = async (req: NextApiRequest, res: NextApiResponse) => {
+const editOrder = async (
+  req: NextApiRequest,
+  res: NextApiResponse,
+  email: any
+) => {
   try {
+    const { action, id } = req.body;
+    if (action === "receive") {
+      const order = await prisma.order.update({
+        where: {
+          id: id,
+        },
+        data: {
+          seller: email,
+          status: 2,
+        },
+      });
+      return res.status(200).json({ success: true, message: order });
+    }
   } catch (error) {
-    return res.status(503).json(error);
+    return res.status(503).json({ success: true, message: error });
   }
 };
 

@@ -17,6 +17,11 @@ interface Product {
   createdAt: Date;
   updatedAt: Date;
 }
+interface Account {
+  ip: string;
+  user: string;
+  password: string;
+}
 
 interface Category {
   id: string;
@@ -38,5 +43,6 @@ export interface Order {
   createdAt: Date;
   updatedAt: Date;
   user: User;
+  account?: Account;
   product: Product;
 }

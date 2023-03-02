@@ -17,7 +17,7 @@ const ItemMenu: React.FC<ItemMenuProps> = ({ name, link, icon }) => {
   };
   const [order, setOrder] = useState();
   useEffect(() => {
-    if (name === "Order") {
+    if (name === "Đơn Hàng") {
       orders();
     }
   }, []);
@@ -28,7 +28,7 @@ const ItemMenu: React.FC<ItemMenuProps> = ({ name, link, icon }) => {
           <FontAwesomeIcon icon={icon} className="h-5 w-5" />
         </span>
         <span className="flex-1">{name}</span>
-        {order && name === "Order" && (
+        {order && name === "Đơn Hàng" && (
           <span className="badge-error badge">+{order}</span>
         )}
       </Link>
