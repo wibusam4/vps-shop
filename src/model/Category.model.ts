@@ -1,17 +1,4 @@
-interface Product {
-  id: string;
-  categoryId: string;
-  name: string;
-  price: number;
-  cpu: number;
-  ram: number;
-  os: string;
-  bandwidth: string;
-  status: string;
-  slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Product } from "./Product.model";
 
 export interface Category {
   id: string;

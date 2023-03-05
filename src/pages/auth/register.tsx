@@ -1,91 +1,109 @@
-import axios from "axios";
-import React, { useState } from "react";
+import type { NextPage } from "next";
+import { signIn } from "next-auth/react";
 import { swalError } from "../../until/swal";
+import { toast } from "react-toastify";
+import * as Yup from "yup";
 import { useRouter } from "next/router";
+import { FormAuth } from "../../model/User.model";
+import { Field, Form, Formik, FormikProps } from "formik";
+import ErrorForm from "../../components/dashboard/form/Error";
+import { useEffect, useState } from "react";
+import { getLocal } from "../../until";
+import Link from "next/link";
+import Google from "../../components/basic/icon/Google";
+import axios from "axios";
 import { getStatusCode } from "../../until/statusCode";
+import Swal from "sweetalert2";
+import Auth from "../../components/basic/layouts/Auth";
 
-interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-}
+const RegisterSchema = Yup.object().shape({
+  name: Yup.string().required("Không được để trống"),
+  email: Yup.string().required("Không được để trống"),
+  password: Yup.string().required("Không được để trống"),
+});
 
 const Register: React.FC = () => {
-  const [registerData, setRegisterData] = useState<RegisterData>({
-    name: "",
-    email: "",
-    password: "",
-  });
-
+  const [theme, setTheme] = useState("emerald");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setRegisterData({ ...registerData, [name]: value });
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleRegister = async (value: FormAuth) => {
+    setLoading(true);
     await axios
-      .post("/api/auth/register", registerData)
+      .post("/api/auth/register", value)
       .then((response) => {
-        router.push("/auth/login");
+        Swal.fire({
+          title: "Đăng kí thành công",
+          icon: "success",
+          showConfirmButton: true,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push("/auth/login");
+          }
+        });
       })
       .catch((err) => {
+        setLoading(false);
         if (err.response) swalError(getStatusCode(err.response.data.error));
       });
   };
+  useEffect(() => {
+    document
+      ?.querySelector("html")
+      ?.setAttribute("data-theme", getLocal("data-theme"));
+    setTheme(getLocal("data-theme"));
+  }, []);
 
   return (
-    <>
-      <div className="bg-grey-lighter flex min-h-screen flex-col">
-        <div className="container mx-auto flex max-w-sm flex-1 flex-col items-center justify-center px-2">
-          <div className="w-full rounded bg-white px-6 py-8 text-black shadow-md">
-            <form onSubmit={handleSubmit}>
-              <label>
-                Name:
-                <input
-                  className="border-grey-light mb-4 block w-full rounded border p-3"
-                  type="text"
-                  name="name"
-                  value={registerData.name}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <br />
-              <label>
-                Email:
-                <input
-                  className="border-grey-light mb-4 block w-full rounded border p-3"
-                  type="email"
-                  name="email"
-                  value={registerData.email}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <br />
-              <label>
-                Password:
-                <input
-                  className="border-grey-light mb-4 block w-full rounded border p-3"
-                  type="password"
-                  name="password"
-                  value={registerData.password}
-                  onChange={handleInputChange}
-                />
-              </label>
-              <br />
+    <Auth isLogin={false}>
+      <Formik
+        initialValues={{
+          name: "",
+          email: "",
+          password: "",
+        }}
+        validationSchema={RegisterSchema}
+        onSubmit={(values) => {
+          handleRegister(values);
+        }}
+      >
+        {(props: FormikProps<FormAuth>) => {
+          const { touched, errors } = props;
+          return (
+            <Form className="flex flex-col gap-4">
+              <Field
+                className="input mt-8 w-full"
+                name="name"
+                placeholder="User name"
+              />
+              <ErrorForm error={errors.name} isTouched={touched.name} />
+
+              <Field
+                className="input w-full"
+                name="email"
+                placeholder="Email"
+              />
+              <ErrorForm error={errors.email} isTouched={touched.email} />
+
+              <Field
+                className="input w-full"
+                name="password"
+                type="password"
+                placeholder="Mật khẩu"
+              />
+              <ErrorForm error={errors.password} isTouched={touched.password} />
               <button
-                className="hover:bg-green-dark my-1 w-full rounded bg-green-500 py-3 text-center text-white focus:outline-none"
+                className={`btn-primary btn mt-4 hover:scale-105 ${
+                  loading ? "loading" : ""
+                }`}
                 type="submit"
               >
-                Register
+                Đăng Kí
               </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </>
+            </Form>
+          );
+        }}
+      </Formik>
+    </Auth>
   );
 };
 

@@ -1,19 +1,20 @@
-import { requireAdmin } from "../../common/authAdmin";
-import Main from "../../components/dashboard/layouts/Main";
-import { prisma } from "../../server/db";
+import Main from "../../../components/dashboard/layouts/Main";
+import { prisma } from "../../../server/db";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import moment from "moment";
-import { formatPrices } from "../../until";
-import { requireCtv } from "../../common/authCtv";
-import { Order } from "../../model/Order.model";
+import { formatPrices } from "../../../until";
+import { requireCtv } from "../../../common/authCtv";
+import { Order } from "../../../model/Order.model";
 import { useSession } from "next-auth/react";
-import Product from "./product";
 
 interface OrderProps {
   orders: Order[][];
 }
+
+const status = ["Đang đặt hàng", "Đợi nhận đơn", "Chưa thêm acc", "Đã xong "];
+const color = ["badge", "badge-warning", "badge-accent", "badge-secondary"]
 
 const Order: React.FC<OrderProps> = ({ orders }) => {
   const router = useRouter();
@@ -82,7 +83,7 @@ const Order: React.FC<OrderProps> = ({ orders }) => {
               <thead>
                 <tr>
                   <th>STT</th>
-                  <th>Tài Khoản</th>
+                  <th>Người mua</th>
                   <th>Sản Phẩm</th>
                   <th>Danh Mục</th>
                   <th>CPU</th>
@@ -99,12 +100,14 @@ const Order: React.FC<OrderProps> = ({ orders }) => {
                     return (
                       <tr key={index}>
                         <th>{index}</th>
-                        <td>{order.user.name}</td>
+                        <td>{order.user.email}</td>
                         <td>{order.product.name}</td>
-                        <td>{order.product.category.name}</td>
+                        <td>{order.product.category?.name}</td>
                         <td>{order.product.ram}</td>
                         <td>{order.product.cpu}</td>
-                        <td>{formatPrices(order.product.price)}</td>
+                        <td className="text-accent-focus">
+                          {formatPrices(order.product.price)}
+                        </td>
                         <td>{moment(order.createdAt).format("DD-MM-YYYY")}</td>
                         <td>{moment(order.updatedAt).format("DD-MM-YYYY")}</td>
                         <td className="flex gap-x-2">
@@ -145,7 +148,7 @@ const Order: React.FC<OrderProps> = ({ orders }) => {
               <thead>
                 <tr>
                   <th>STT</th>
-                  <th>Tài Khoản</th>
+                  <th>Người mua</th>
                   <th>Sản Phẩm</th>
                   <th>Danh Mục</th>
                   <th>CPU</th>
@@ -164,14 +167,20 @@ const Order: React.FC<OrderProps> = ({ orders }) => {
                     return (
                       <tr key={index}>
                         <th>{index}</th>
-                        <td>{order.user.name}</td>
+                        <td>{order.user.email}</td>
                         <td>{order.product.name}</td>
-                        <td>{order.product.category.name}</td>
+                        <td>{order.product.category?.name}</td>
                         <td>{order.product.ram}</td>
                         <td>{order.product.cpu}</td>
-                        <td>{formatPrices(order.product.price)}</td>
-                        <td>{order.seller}</td>
-                        <td>{order.status}</td>
+                        <td className="text-accent">
+                          {formatPrices(order.product.price)}
+                        </td>
+                        <td>{order.seller?.email ?? "loading"}</td>
+                        <td>
+                          <div className={`badge ${color[order.status]}`}>
+                            {status[order.status]}
+                          </div>
+                        </td>
                         <td>{moment(order.createdAt).format("DD/MM/YYYY")}</td>
                         <td>
                           {moment(order.updatedAt).format("DD/MM/YYYY HH:MMp")}
@@ -211,7 +220,7 @@ export const getServerSideProps = requireCtv(async (ctx) => {
           include: {
             user: {
               select: {
-                name: true,
+                email: true,
               },
             },
             product: {
@@ -225,7 +234,12 @@ export const getServerSideProps = requireCtv(async (ctx) => {
           include: {
             user: {
               select: {
-                name: true,
+                email: true,
+              },
+            },
+            seller: {
+              select: {
+                email: true,
               },
             },
             product: {

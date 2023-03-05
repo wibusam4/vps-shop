@@ -60,6 +60,13 @@ const AddProduct: React.FC<RootObject> = ({ categories }) => {
           const { touched, errors, values, handleChange } = props;
           return (
             <Form>
+              <div className="form-control">
+                <label className="input-group">
+                  <span className="bg-warning p-1 font-medium">
+                    Thêm sản phẩm
+                  </span>
+                </label>
+              </div>
               <div className="form-control mb-4 w-full">
                 <label className="label">
                   <span>Tên Sản Phẩm:</span>
@@ -176,10 +183,10 @@ const AddProduct: React.FC<RootObject> = ({ categories }) => {
                   name="status"
                   as="select"
                   className="input-bordered input w-full"
-                  default="Active"
+                  default="ACTIVE"
                 >
-                  <option value="Active">Active</option>
-                  <option value="InActive">InActive</option>
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="INACTIVE">INACTIVE</option>
                 </Field>
                 {errors.status && touched.status ? (
                   <div className="alert alert-error mt-2 rounded p-2 text-base-100">

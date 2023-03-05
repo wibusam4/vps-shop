@@ -34,6 +34,10 @@ const Buy: React.FC<BuyProps> = ({ product }) => {
       if (result.isConfirmed) {
         axios.post("/api/order", { id: product.id }).then((result) => {
           router.push("/");
+          Swal.fire({
+            title:"Mua thành công",
+            icon: "success"
+          })
         });
       }
     });

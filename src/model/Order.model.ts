@@ -1,21 +1,9 @@
-interface User {
-  name: string;
-}
+import { Product } from "./Product.model";
 
-interface Product {
+interface User {
   id: string;
-  categoryId: string;
   name: string;
-  price: number;
-  cpu: number;
-  ram: number;
-  os: string;
-  bandwidth: string;
-  status: string;
-  slug: string;
-  category: Category;
-  createdAt: Date;
-  updatedAt: Date;
+  email: string;
 }
 interface Account {
   ip: string;
@@ -23,26 +11,18 @@ interface Account {
   password: string;
 }
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  status: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 export interface Order {
   id: string;
   userId: string;
+  sellerId?: string;
   productId: string;
-  seller?: any;
   note?: any;
   infor?: any;
   status: number;
   createdAt: Date;
   updatedAt: Date;
   user: User;
+  seller?: User;
   account?: Account;
   product: Product;
 }

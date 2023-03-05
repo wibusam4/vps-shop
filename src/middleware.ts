@@ -6,13 +6,13 @@ import { env } from "./env/server.mjs";
 export async function middleware(req: NextRequest) {
   const session = await getToken({ req, secret: env.NEXTAUTH_SECRET });
 
-  if (req.nextUrl.pathname.startsWith('/auth') && session) {
+  if (req.nextUrl.pathname.startsWith("/auth") && session) {
     const url = req.nextUrl.clone();
     url.pathname = `/`;
     return NextResponse.redirect(url);
   }
 
-  if (req.nextUrl.pathname.startsWith('/r') && !session) {
+  if (needAuth(req, "/r", session)) {
     const url = req.nextUrl.clone();
     url.pathname = `/auth/login`;
     return NextResponse.redirect(url);
@@ -20,3 +20,7 @@ export async function middleware(req: NextRequest) {
 
   return NextResponse.next();
 }
+
+const needAuth = (req: NextRequest, param: string, session: any) => {
+  return req.nextUrl.pathname.startsWith(param) && !session;
+};

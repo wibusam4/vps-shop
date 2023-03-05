@@ -9,7 +9,7 @@ import { Field, Form, Formik, FormikProps } from "formik";
 import ErrorForm from "../../components/dashboard/form/Error";
 import { useEffect, useState } from "react";
 import { getLocal } from "../../until";
-
+import Auth from "../../components/basic/layouts/Auth";
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required("Không được để trống"),
   password: Yup.string().required("Không được để trống"),
@@ -17,14 +17,17 @@ const LoginSchema = Yup.object().shape({
 
 const Login: NextPage = () => {
   const [theme, setTheme] = useState("emerald");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const handleSubmit = async (value: FormAuth) => {
+    setLoading(true);
     signIn("credentials", {
       ...value,
       callbackUrl: `${window.location.origin}/`,
       redirect: false,
     })
       .then((res) => {
+        setLoading(false);
         if (!res?.ok) {
           return swalError("Tên đăng nhập hoặc mật khẩu không đúng!");
         }
@@ -44,69 +47,49 @@ const Login: NextPage = () => {
       ?.setAttribute("data-theme", getLocal("data-theme"));
     setTheme(getLocal("data-theme"));
   }, []);
-   return (
-    <>
-      <div className="flex min-h-screen flex-col">
-        <div className="phone-3 artboard mx-auto flex items-center justify-center">
-          <div className="w-full text-base-content">
-            <h1 className="mb-2 p-2 text-center text-xl md:text-2xl">
-              Đăng nhập đi nào!
-            </h1>
-            <div className="rounded bg-base-300  px-6 py-8 shadow-md shadow-white">
-              <Formik
-                initialValues={{
-                  email: "",
-                  password: "",
-                }}
-                validationSchema={LoginSchema}
-                onSubmit={(values) => {
-                  handleSubmit(values);
-                }}
+  return (
+    <Auth isLogin={true}>
+      <Formik
+        initialValues={{
+          email: "",
+          password: "",
+        }}
+        validationSchema={LoginSchema}
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}
+      >
+        {(props: FormikProps<FormAuth>) => {
+          const { touched, errors } = props;
+          return (
+            <Form className="flex flex-col gap-4">
+              <Field
+                className="input mt-8 w-full"
+                name="email"
+                placeholder="Email"
+              />
+              <ErrorForm error={errors.email} isTouched={touched.email} />
+
+              <Field
+                className="input w-full"
+                name="password"
+                type="password"
+                placeholder="Mật khẩu"
+              />
+              <ErrorForm error={errors.password} isTouched={touched.password} />
+              <button
+                className={`btn-primary btn mt-4 hover:scale-105 ${
+                  loading ? "loading" : ""
+                }`}
+                type="submit"
               >
-                {(props: FormikProps<FormAuth>) => {
-                  const { touched, errors } = props;
-                  return (
-                    <Form>
-                      <div className="form-control mb-4 w-full">
-                        <label className="label">
-                          <span>Email:</span>
-                        </label>
-                        <Field
-                          className="input-bordered input w-full"
-                          name="email"
-                        />
-                        <ErrorForm
-                          error={errors.email}
-                          isTouched={touched.email}
-                        />
-                        <label className="label">
-                          <span >Mật khẩu:</span>
-                        </label>
-                        <Field
-                          className="input-bordered input w-full"
-                          name="password"
-                          type="password"
-                        />
-                        <ErrorForm
-                          error={errors.password}
-                          isTouched={touched.password}
-                        />
-                        <button
-                          className="btn-secondary btn mt-4"
-                          type="submit"
-                        >
-                          Đăng Nhập
-                        </button>
-                      </div>
-                    </Form>
-                  );
-                }}
-              </Formik>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+                Đăng Nhập
+              </button>
+            </Form>
+          );
+        }}
+      </Formik>
+    </Auth>
   );
 };
 

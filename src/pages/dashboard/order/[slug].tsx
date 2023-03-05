@@ -50,7 +50,7 @@ console.log(orders);
                         <th>{index}</th>
                         <td>{order.user.name}</td>
                         <td>{order.product.name}</td>
-                        <td>{order.product.category.name}</td>
+                        <td>{order.product.category?.name}</td>
                         <td>{order.product.ram}</td>
                         <td>{order.product.cpu}</td>
                         <td>{formatPrices(order.product.price)}</td>

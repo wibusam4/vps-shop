@@ -22,10 +22,10 @@ export default async function handler(
       addOrder(req, res, session.user.id);
       break;
     case "PUT":
-      editOrder(req, res, session.user.email);
+      editOrder(req, res, session.user.id);
       break;
     case "DELETE":
-      //deleteProduct(req, res);
+      deleteOrder(req, res);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
@@ -84,7 +84,7 @@ const addOrder = async (
         data: {
           userId: user.id,
           oldMoney,
-          money: product.price,
+          money: -product.price,
           newMoney,
           description: `Mua vps ${product.name}`,
         },
@@ -105,7 +105,7 @@ const addOrder = async (
 const editOrder = async (
   req: NextApiRequest,
   res: NextApiResponse,
-  email: any
+  sellerId: any
 ) => {
   try {
     const { action, id } = req.body;
@@ -115,7 +115,7 @@ const editOrder = async (
           id: id,
         },
         data: {
-          seller: email,
+          sellerId,
           status: 2,
         },
       });
@@ -126,8 +126,11 @@ const editOrder = async (
   }
 };
 
-const deleteProduct = async (req: NextApiRequest, res: NextApiResponse) => {
+const deleteOrder = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
+    const id = req.body.id;
+    const order = await prisma.order.delete({ where: { id } });
+    return res.status(200).json({ success: true, message: order });
   } catch (error) {
     res.status(503).json(error);
   }

@@ -8,8 +8,6 @@ interface RootObject {
   allData: any;
 }
 const Dashboard: React.FC<RootObject> = (allData) => {
-  console.log(allData);
-
   return (
     <Main>
       <div className="bg-primary pb-12 pt-12">
